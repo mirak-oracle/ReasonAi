@@ -22,6 +22,7 @@
 
         h1 {
             color: #007bff;
+            margin-bottom: 20px;
         }
 
         p {
@@ -31,6 +32,9 @@
 
         #output {
             margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
         }
 
         button {
@@ -62,15 +66,54 @@
         recognition.continuous = false;
         recognition.lang = 'en-US';
 
-        recognition.onresult = function(event) {
+        recognition.onresult = async function(event) {
             const transcript = event.results[0][0].transcript;
             document.getElementById('output').innerText = 'You said: ' + transcript;
-            speakResponse('You said: ' + transcript);
+
+            // Process speech input using NLP
+            await processSpeech(transcript);
         };
 
         recognition.onerror = function(event) {
             console.error('Speech recognition error:', event.error);
         };
+
+        async function processSpeech(input) {
+            // Send speech input to NLP service for analysis
+            const response = await fetch('https://nlp-service.com/analyze', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ input: input })
+            });
+
+            // Parse NLP response
+            const nlpData = await response.json();
+
+            // Extract intent and entities from NLP response
+            const intent = nlpData.intent;
+            const entities = nlpData.entities;
+
+            // Determine response based on intent and entities
+            let responseText;
+            switch (intent) {
+                case 'get_weather':
+                    const location = entities.location;
+                    responseText = `The weather in ${location} is currently sunny.`;
+                    break;
+                case 'search_query':
+                    const query = entities.query;
+                    // Perform search or query processing
+                    responseText = `Here are the search results for "${query}".`;
+                    break;
+                default:
+                    responseText = `I'm sorry, I didn't understand that.`;
+            }
+
+            // Speak or display response
+            speakResponse(responseText);
+        }
 
         function startListening() {
             recognition.start();
