@@ -52,7 +52,7 @@
 <body>
     <div class="container">
         <h1>ReasonAI - Voice Interaction</h1>
-        <p>Speak to ReasonAI and ask questions to engage .</p>
+        <p>Speak to ReasonAI to engage .</p>
         <div id="output"></div>
         <button onclick="startListening()">Start Listening</button>
     </div>
@@ -60,7 +60,20 @@
     <script>
         const recognition = new window.webkitSpeechRecognition();
         recognition.continuous = false;
-        recognition.lang = 'en-US';
+
+        // Define an array of language codes for the languages you want to support
+        const supportedLanguages = [
+            'en-US', 'es-ES', 'fr-FR', 'de-DE', 'it-IT', // English, Spanish, French, German, Italian
+            'pt-PT', 'nl-NL', 'sv-SE', 'da-DK', 'fi-FI', // Portuguese, Dutch, Swedish, Danish, Finnish
+            'nb-NO', 'tr-TR', 'ru-RU', 'pl-PL', 'cs-CZ', // Norwegian, Turkish, Russian, Polish, Czech
+            'hu-HU', 'ro-RO', 'el-GR', 'ja-JP', 'ko-KR', // Hungarian, Romanian, Greek, Japanese, Korean
+            'zh-CN', 'zh-TW', 'th-TH', 'id-ID', 'ms-MY', // Chinese (Simplified), Chinese (Traditional), Thai, Indonesian, Malay
+            'vi-VN', 'hi-IN', 'bn-IN', 'ta-IN', 'te-IN', // Vietnamese, Hindi, Bengali, Tamil, Telugu
+            // Add more language codes as needed
+        ];
+
+        // Set the recognition language to the array of supported languages
+        recognition.lang = supportedLanguages;
 
         recognition.onresult = function(event) {
             const transcript = event.results[0][0].transcript;
