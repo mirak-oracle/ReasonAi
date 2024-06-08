@@ -14,7 +14,7 @@
 
       gtag('config', 'G-ZY9S9E5VGC');
     </script>
-    <style>
+       <style>
         body {
             font-family: 'Roboto', sans-serif;
             background-color: #f5f5f5;
@@ -28,10 +28,10 @@
 
         .container {
             text-align: center;
-            border-radius: 10px;
+            background: white;
             padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
@@ -50,10 +50,6 @@
             color: #444;
             font-size: 1.5rem;
             margin-bottom: 20px;
-            border: 2px solid #ccc;
-            padding: 10px;
-            border-radius: 5px;
-            min-height: 50px;
         }
 
         button {
@@ -71,14 +67,25 @@
         button:hover {
             background-color: #0056b3;
         }
+
+        .reasonai-image {
+            width: 150px;
+            height: 150px;
+            margin: 20px auto;
+            border-radius: 50%;
+            background: url('https://via.placeholder.com/150') no-repeat center center;
+            background-size: cover;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>ReasonAI - Voice Interaction</h1>
         <p>Speak to ReasonAI to engage.</p>
+        <div class="reasonai-image"></div>
         <div id="output"></div>
         <button onclick="startListening()">Start Listening</button>
+    </div>
     </div>
 </body>
 </html>
