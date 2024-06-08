@@ -5,16 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ReasonAI - Voice Interaction</title>
 
-  
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZY9S9E5VGC"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZY9S9E5VGC"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
 
-  gtag('config', 'G-ZY9S9E5VGC');
-</script>
+      gtag('config', 'G-ZY9S9E5VGC');
+    </script>
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -29,6 +28,10 @@
 
         .container {
             text-align: center;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
         }
 
         h1 {
@@ -47,6 +50,10 @@
             color: #444;
             font-size: 1.5rem;
             margin-bottom: 20px;
+            border: 2px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            min-height: 50px;
         }
 
         button {
@@ -73,58 +80,82 @@
         <div id="output"></div>
         <button onclick="startListening()">Start Listening</button>
     </div>
+</body>
+</html>
+
+    </div>
 
     <script>
-        const recognition = new window.webkitSpeechRecognition();
-        recognition.continuous = false;
+    const recognition = new window.webkitSpeechRecognition();
+    recognition.continuous = false;
 
-        const supportedLanguages = [
-            'en-US', 'es-ES', 'fr-FR', 'de-DE', 'it-IT', 
-            'pt-PT', 'nl-NL', 'sv-SE', 'da-DK', 'fi-FI', 
-            'nb-NO', 'tr-TR', 'ru-RU', 'pl-PL', 'cs-CZ', 
-            'hu-HU', 'ro-RO', 'el-GR', 'ja-JP', 'ko-KR', 
-            'zh-CN', 'zh-TW', 'th-TH', 'id-ID', 'ms-MY', 
-            'vi-VN', 'hi-IN', 'bn-IN', 'ta-IN', 'te-IN',
-            'pcm', // Nigerian Pidgin
-        ];
+    const supportedLanguages = [
+        'en-US', 'es-ES', 'fr-FR', 'de-DE', 'it-IT', 
+        'pt-PT', 'nl-NL', 'sv-SE', 'da-DK', 'fi-FI', 
+        'nb-NO', 'tr-TR', 'ru-RU', 'pl-PL', 'cs-CZ', 
+        'hu-HU', 'ro-RO', 'el-GR', 'ja-JP', 'ko-KR', 
+        'zh-CN', 'zh-TW', 'th-TH', 'id-ID', 'ms-MY', 
+        'vi-VN', 'hi-IN', 'bn-IN', 'ta-IN', 'te-IN',
+        'pcm', // Nigerian Pidgin
+        'ha-NG', // Hausa
+        'ig-NG', // Igbo
+        'yo-NG', // Yoruba
+        'sw-TZ', // Swahili (Tanzania)
+        'sw-KE', // Swahili (Kenya)
+        'am-ET', // Amharic (Ethiopia)
+        'so-SO', // Somali
+        'sn-ZW', // Shona (Zimbabwe)
+        'xh-ZA', // Xhosa (South Africa)
+        'zu-ZA', // Zulu (South Africa)
+        'rw-RW', // Kinyarwanda (Rwanda)
+        'lg-UG', // Luganda (Uganda)
+        'st-LS', // Sesotho (Lesotho)
+        'tn-ZA', // Setswana (South Africa)
+        'ss-ZA', // SiSwati (South Africa)
+        'ks-KE', // Gikuyu (Kenya)
+        'nso-ZA', // Sesotho sa Leboa (South Africa)
+        'dje-NE', // Zarma (Niger)
+        // Add more African languages here as needed
+    ];
 
-        recognition.lang = supportedLanguages;
+    recognition.lang = supportedLanguages;
 
-        recognition.onresult = function(event) {
-            const transcript = event.results[0][0].transcript;
-            document.getElementById('output').innerText = 'You said: ' + transcript;
-            // Perform NLU to understand user intents and respond accordingly
-            handleUserInput(transcript);
-        };
+    recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById('output').innerText = 'You said: ' + transcript;
+        // Perform NLU to understand user intents and respond accordingly
+        handleUserInput(transcript);
+    };
 
-        recognition.onerror = function(event) {
-            console.error('Speech recognition error:', event.error);
-        };
+    recognition.onerror = function(event) {
+        console.error('Speech recognition error:', event.error);
+    };
 
-        function startListening() {
-            recognition.start();
-            document.getElementById('output').innerText = 'Listening...';
+    function startListening() {
+        recognition.start();
+        document.getElementById('output').innerText = 'Listening...';
+    }
+
+    function speakResponse(response) {
+        const synthesis = window.speechSynthesis;
+        const utterance = new SpeechSynthesisUtterance(response);
+        synthesis.speak(utterance);
+    }
+
+    function handleUserInput(input) {
+        // Perform NLU and respond accordingly
+        // Example: If input contains a request for help, respond with assistance
+        if (input.toLowerCase().includes('help')) {
+            const response = "Sure, I'm here to assist you. What do you need help with?";
+            speakResponse(response);
+        } else {
+            // Handle other user intents or tasks based on input
+            // Example: Call APIs to solve world problems based on user input
+            // For demonstration purposes, let's just echo the input
+            speakResponse("You said: " + input);
         }
+    }
+</script>
 
-        function speakResponse(response) {
-            const synthesis = window.speechSynthesis;
-            const utterance = new SpeechSynthesisUtterance(response);
-            synthesis.speak(utterance);
-        }
-
-        function handleUserInput(input) {
-            // Perform NLU and respond accordingly
-            // Example: If input contains a request for help, respond with assistance
-            if (input.toLowerCase().includes('help')) {
-                const response = "Sure, I'm here to assist you. What do you need help with?";
-                speakResponse(response);
-            } else {
-                // Handle other user intents or tasks based on input
-                // Example: Call APIs to solve world problems based on user input
-                // For demonstration purposes, let's just echo the input
-                speakResponse("You said: " + input);
-            }
-        }
-    </script>
 </body>
 </html>
