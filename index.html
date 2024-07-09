@@ -8,13 +8,13 @@
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZY9S9E5VGC"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-ZY9S9E5VGC');
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-ZY9S9E5VGC');
     </script>
-       <style>
+    <script src="https://cdn.jsdelivr.net/npm/langdetect/dist/langdetect.min.js"></script>
+    <style>
         body {
             font-family: 'Roboto', sans-serif;
             background-color: #f5f5f5;
@@ -25,7 +25,6 @@
             align-items: center;
             height: 100vh;
         }
-
         .container {
             text-align: center;
             background: white;
@@ -33,25 +32,21 @@
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-
         h1 {
             color: #333;
             font-size: 2.5rem;
             margin-bottom: 20px;
         }
-
         p {
             color: #666;
             font-size: 1.2rem;
             margin-bottom: 20px;
         }
-
         #output {
             color: #444;
             font-size: 1.5rem;
             margin-bottom: 20px;
         }
-
         button {
             padding: 10px 20px;
             background-color: #007bff;
@@ -63,11 +58,9 @@
             transition: background-color 0.3s ease;
             outline: none;
         }
-
         button:hover {
             background-color: #0056b3;
         }
-
         .reasonai-image {
             width: 150px;
             height: 150px;
@@ -86,15 +79,11 @@
         <div id="output"></div>
         <button onclick="startListening()">Start Listening</button>
     </div>
-    </div>
-</body>
-</html>
-
-    </div>
 
     <script>
     const recognition = new window.webkitSpeechRecognition();
     recognition.continuous = false;
+    recognition.interimResults = false;
 
     const supportedLanguages = [
         'en-US', 'es-ES', 'fr-FR', 'de-DE', 'it-IT', 
@@ -125,12 +114,24 @@
         // Add more African languages here as needed
     ];
 
-    recognition.lang = supportedLanguages;
+    recognition.lang = 'en-US'; // default language
+    
+    // Function to detect language using LangDetect library
+    function detectLanguage(text) {
+        const detector = new LangDetect();
+        const detectedLang = detector.detect(text);
+        return detectedLang;
+    }
 
     recognition.onresult = function(event) {
         const transcript = event.results[0][0].transcript;
         document.getElementById('output').innerText = 'You said: ' + transcript;
-        // Perform NLU to understand user intents and respond accordingly
+        const detectedLanguage = detectLanguage(transcript);
+        if (supportedLanguages.includes(detectedLanguage)) {
+            recognition.lang = detectedLanguage;
+        } else {
+            console.warn('Detected language not supported:', detectedLanguage);
+        }
         handleUserInput(transcript);
     };
 
@@ -150,19 +151,14 @@
     }
 
     function handleUserInput(input) {
-        // Perform NLU and respond accordingly
-        // Example: If input contains a request for help, respond with assistance
         if (input.toLowerCase().includes('help')) {
             const response = "Sure, I'm here to assist you. What do you need help with?";
             speakResponse(response);
         } else {
-            // Handle other user intents or tasks based on input
             // Example: Call APIs to solve world problems based on user input
-            // For demonstration purposes, let's just echo the input
             speakResponse("You said: " + input);
         }
     }
-</script>
-
+    </script>
 </body>
 </html>
