@@ -13,7 +13,10 @@
         gtag('js', new Date());
         gtag('config', 'G-ZY9S9E5VGC');
     </script>
+    
+    <!-- Language Detection Library -->
     <script src="https://cdn.jsdelivr.net/npm/langdetect/dist/langdetect.min.js"></script>
+    
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -28,9 +31,9 @@
         .container {
             text-align: center;
             background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
         h1 {
             color: #333;
@@ -48,11 +51,11 @@
             margin-bottom: 20px;
         }
         button {
-            padding: 10px 20px;
+            padding: 12px 24px;
             background-color: #007bff;
             color: #fff;
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
             font-size: 1.2rem;
             cursor: pointer;
             transition: background-color 0.3s ease;
@@ -69,96 +72,139 @@
             background: url('https://images.app.goo.gl/aWWqYLeNxjh9q1B86/') no-repeat center center;
             background-size: cover;
         }
+        .avatar {
+            width: 150px;
+            height: 150px;
+            margin: 20px auto;
+            border-radius: 50%;
+            background: url('https://example.com/animated-avatar.gif') no-repeat center center;
+            background-size: cover;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>ReasonAI - Voice Interaction</h1>
         <p>Speak to ReasonAI to engage.</p>
-        <div class="reasonai-image"></div>
+        <div class="avatar"></div> <!-- Use animated avatar -->
         <div id="output"></div>
         <button onclick="startListening()">Start Listening</button>
+        <div id="stats"></div> <!-- Placeholder for statistics -->
     </div>
 
     <script>
-    const recognition = new window.webkitSpeechRecognition();
-    recognition.continuous = false;
-    recognition.interimResults = false;
+        const recognition = new window.webkitSpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
 
-    const supportedLanguages = [
-        'en-US', 'es-ES', 'fr-FR', 'de-DE', 'it-IT', 
-        'pt-PT', 'nl-NL', 'sv-SE', 'da-DK', 'fi-FI', 
-        'nb-NO', 'tr-TR', 'ru-RU', 'pl-PL', 'cs-CZ', 
-        'hu-HU', 'ro-RO', 'el-GR', 'ja-JP', 'ko-KR', 
-        'zh-CN', 'zh-TW', 'th-TH', 'id-ID', 'ms-MY', 
-        'vi-VN', 'hi-IN', 'bn-IN', 'ta-IN', 'te-IN',
-        'pcm', // Nigerian Pidgin
-        'ha-NG', // Hausa
-        'ig-NG', // Igbo
-        'yo-NG', // Yoruba
-        'sw-TZ', // Swahili (Tanzania)
-        'sw-KE', // Swahili (Kenya)
-        'am-ET', // Amharic (Ethiopia)
-        'so-SO', // Somali
-        'sn-ZW', // Shona (Zimbabwe)
-        'xh-ZA', // Xhosa (South Africa)
-        'zu-ZA', // Zulu (South Africa)
-        'rw-RW', // Kinyarwanda (Rwanda)
-        'lg-UG', // Luganda (Uganda)
-        'st-LS', // Sesotho (Lesotho)
-        'tn-ZA', // Setswana (South Africa)
-        'ss-ZA', // SiSwati (South Africa)
-        'ks-KE', // Gikuyu (Kenya)
-        'nso-ZA', // Sesotho sa Leboa (South Africa)
-        'dje-NE', // Zarma (Niger)
-        // Add more African languages here as needed
-    ];
+        const supportedLanguages = [
+            'en-US', 'es-ES', 'fr-FR', 'de-DE', 'it-IT', 
+            'pt-PT', 'nl-NL', 'sv-SE', 'da-DK', 'fi-FI', 
+            'nb-NO', 'tr-TR', 'ru-RU', 'pl-PL', 'cs-CZ', 
+            'hu-HU', 'ro-RO', 'el-GR', 'ja-JP', 'ko-KR', 
+            'zh-CN', 'zh-TW', 'th-TH', 'id-ID', 'ms-MY', 
+            'vi-VN', 'hi-IN', 'bn-IN', 'ta-IN', 'te-IN',
+            'pcm', 'ha-NG', 'ig-NG', 'yo-NG', 'sw-TZ', 
+            'sw-KE', 'am-ET', 'so-SO', 'sn-ZW', 'xh-ZA', 
+            'zu-ZA', 'rw-RW', 'lg-UG', 'st-LS', 'tn-ZA', 
+            'ss-ZA', 'ks-KE', 'nso-ZA', 'dje-NE'
+        ];
 
-    recognition.lang = 'en-US'; // default language
-    
-    // Function to detect language using LangDetect library
-    function detectLanguage(text) {
-        const detector = new LangDetect();
-        const detectedLang = detector.detect(text);
-        return detectedLang;
-    }
-
-    recognition.onresult = function(event) {
-        const transcript = event.results[0][0].transcript;
-        document.getElementById('output').innerText = 'You said: ' + transcript;
-        const detectedLanguage = detectLanguage(transcript);
-        if (supportedLanguages.includes(detectedLanguage)) {
-            recognition.lang = detectedLanguage;
-        } else {
-            console.warn('Detected language not supported:', detectedLanguage);
+        recognition.lang = 'en-US'; // default language
+        
+        // Function to detect language using LangDetect library
+        function detectLanguage(text) {
+            const detector = new LangDetect();
+            const detectedLang = detector.detect(text);
+            return detectedLang;
         }
-        handleUserInput(transcript);
-    };
 
-    recognition.onerror = function(event) {
-        console.error('Speech recognition error:', event.error);
-    };
+        recognition.onresult = function(event) {
+            const transcript = event.results[0][0].transcript;
+            document.getElementById('output').innerText = 'You said: ' + transcript;
+            const detectedLanguage = detectLanguage(transcript);
+            if (supportedLanguages.includes(detectedLanguage)) {
+                recognition.lang = detectedLanguage;
+            } else {
+                console.warn('Detected language not supported:', detectedLanguage);
+            }
+            handleUserInput(transcript);
+        };
 
-    function startListening() {
-        recognition.start();
-        document.getElementById('output').innerText = 'Listening...';
-    }
+        recognition.onerror = function(event) {
+            console.error('Speech recognition error:', event.error);
+        };
 
-    function speakResponse(response) {
-        const synthesis = window.speechSynthesis;
-        const utterance = new SpeechSynthesisUtterance(response);
-        synthesis.speak(utterance);
-    }
-
-    function handleUserInput(input) {
-        if (input.toLowerCase().includes('help')) {
-            const response = "Sure, I'm here to assist you. What do you need help with?";
-            speakResponse(response);
-        } else {
-            // Example: Call APIs to solve world problems based on user input
-            speakResponse("You said: " + input);
+        function startListening() {
+            recognition.start();
+            document.getElementById('output').innerText = 'Listening...';
         }
-    }
+
+        function speakResponse(response) {
+            const synthesis = window.speechSynthesis;
+            const utterance = new SpeechSynthesisUtterance(response);
+            synthesis.speak(utterance);
+        }
+
+        function handleUserInput(input) {
+            if (input.toLowerCase().includes('help')) {
+                const response = "Sure, I'm here to assist you. What do you need help with?";
+                speakResponse(response);
+            } else {
+                // Example: Call APIs to solve world problems based on user input
+                speakResponse("You said: " + input);
+            }
+        }
+
+        // Function to get user statistics
+        function getUserStatistics() {
+            // Mocking statistics, you can replace with actual API calls
+            const stats = {
+                '24_hours': '3 sessions',
+                '7_days': '15 sessions',
+                '1_month': '45 sessions',
+            };
+            let statsOutput = '<h3>Usage Statistics</h3>';
+            for (const [period, value] of Object.entries(stats)) {
+                statsOutput += `<p>${period}: ${value}</p>`;
+            }
+            document.getElementById('stats').innerHTML = statsOutput;
+        }
+
+        // Call the statistics function on page load
+        getUserStatistics();
+
+        // Function to enable Dark Mode
+        function enableDarkMode() {
+            document.body.style.backgroundColor = '#333';
+            document.body.style.color = '#fff';
+            document.querySelectorAll('.container').forEach(container => {
+                container.style.backgroundColor = '#444';
+                container.style.color = '#fff';
+            });
+            document.querySelectorAll('button').forEach(button => {
+                button.style.backgroundColor = '#555';
+                button.style.color = '#fff';
+            });
+        }
+
+        // Function to toggle between Dark and Light Mode
+        function toggleDarkMode() {
+            if (document.body.style.backgroundColor === 'rgb(51, 51, 51)') {
+                document.body.style.backgroundColor = '#f5f5f5';
+                document.body.style.color = '#000';
+                document.querySelectorAll('.container').forEach(container => {
+                    container.style.backgroundColor = '#fff';
+                    container.style.color = '#000';
+                });
+                document.querySelectorAll('button').forEach(button => {
+                    button.style.backgroundColor = '#007bff';
+                    button.style.color = '#fff';
+                });
+            } else {
+                enableDarkMode();
+            }
+        }
     </script>
 </body>
 </html>
