@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ReasonAI - Voice Interaction</title>
-
+    <title>ReasonAI - Your Voice Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/langdetect/dist/langdetect.min.js"></script>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZY9S9E5VGC"></script>
     <script>
@@ -13,183 +14,152 @@
         gtag('js', new Date());
         gtag('config', 'G-ZY9S9E5VGC');
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/langdetect/dist/langdetect.min.js"></script>
-    
-       <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #111827; /* Dark background */
-            color: #e5e7eb; /* Light text color */
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        .container {
-            text-align: center;
-            background: #1f2937; /* Slightly lighter dark background */
-            padding: 24px;
-            border-radius: 16px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3); /* Deeper shadow */
-            max-width: 400px;
-            width: 100%;
-        }
-
-        h1 {
-            color: #60a5fa; /* Blue color for the title */
-            font-size: 2.5rem;
-            margin-bottom: 16px;
-        }
-
-        p {
-            color: #9ca3af; /* Muted text color */
-            font-size: 1.1rem;
-            margin-bottom: 24px;
-        }
-
-        #output {
-            color: #f9fafb; /* Bright output text color */
-            font-size: 1.3rem;
-            margin-bottom: 24px;
-        }
-
-        button {
-            padding: 12px 24px;
-            background-color: #3b82f6; /* Bright blue button */
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-            outline: none;
-            width: 100%;
-            max-width: 200px;
-            margin: 0 auto;
-        }
-
-        button:hover {
-            background-color: #2563eb; /* Darker blue on hover */
-            transform: translateY(-2px); /* Slight lift on hover */
-        }
-
-        .reasonai-image {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 16px;
-            border-radius: 50%;
-            background: url('https://images.app.goo.gl/aWWqYLeNxjh9q1B86/') no-repeat center center;
-            background-size: cover;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Add shadow to the image */
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 640px) {
-            .container {
-                padding: 16px;
-            }
-
-            h1 {
-                font-size: 2rem;
-            }
-
-            button {
-                max-width: 100%;
-            }
-        }
-    </style>
 </head>
-<body>
-    <div class="container">
-        <h1>ReasonAI - Voice Interaction</h1>
-        <p>Speak to ReasonAI to engage.</p>
-        <div class="reasonai-image"></div>
-        <div id="output">Ready to listen...</div>
-        <button onclick="startListening()">Start Listening</button>
+<body class="bg-gradient-to-r from-purple-500 to-indigo-600 min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-2xl p-8 max-w-md w-full">
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-indigo-600 mb-2">ReasonAI</h1>
+            <p class="text-gray-600">Your friendly voice assistant</p>
+        </div>
+        
+        <div class="mb-8 flex justify-center">
+            <button id="startButton" class="bg-indigo-600 text-white rounded-full p-4 shadow-lg hover:bg-indigo-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                </svg>
+            </button>
+        </div>
+        
+        <div id="output" class="bg-gray-100 rounded-lg p-4 mb-4 min-h-[100px] text-center flex items-center justify-center text-gray-700">
+            Click the microphone to start
+        </div>
+        
+        <div class="flex space-x-2 mb-4">
+            <button id="copyButton" class="flex-1 bg-green-500 text-white rounded-md py-2 px-4 hover:bg-green-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+                Copy Text
+            </button>
+            <button id="shareButton" class="flex-1 bg-blue-500 text-white rounded-md py-2 px-4 hover:bg-blue-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                Share
+            </button>
+        </div>
+        
+        <div id="suggestions" class="text-sm text-gray-600 mb-4">
+            <p class="font-semibold mb-2">Try saying:</p>
+            <ul class="list-disc list-inside">
+                <li>"What's the weather like?"</li>
+                <li>"Tell me a joke"</li>
+                <li>"How do I learn to read?"</li>
+            </ul>
+        </div>
+        
+        <div id="learningTip" class="bg-yellow-100 rounded-lg p-4 text-sm text-yellow-800 hidden">
+            <p class="font-semibold mb-2">Learning Tip:</p>
+            <p id="tipContent"></p>
+        </div>
     </div>
+
     <script>
-    const recognition = new window.webkitSpeechRecognition();
-    recognition.continuous = false;
-    recognition.interimResults = false;
+        const startButton = document.getElementById('startButton');
+        const output = document.getElementById('output');
+        const copyButton = document.getElementById('copyButton');
+        const shareButton = document.getElementById('shareButton');
+        const learningTip = document.getElementById('learningTip');
+        const tipContent = document.getElementById('tipContent');
 
-    const supportedLanguages = [
-        'en-US', 'es-ES', 'fr-FR', 'de-DE', 'it-IT', 
-        'pt-PT', 'nl-NL', 'sv-SE', 'da-DK', 'fi-FI', 
-        'nb-NO', 'tr-TR', 'ru-RU', 'pl-PL', 'cs-CZ', 
-        'hu-HU', 'ro-RO', 'el-GR', 'ja-JP', 'ko-KR', 
-        'zh-CN', 'zh-TW', 'th-TH', 'id-ID', 'ms-MY', 
-        'vi-VN', 'hi-IN', 'bn-IN', 'ta-IN', 'te-IN',
-        'pcm', // Nigerian Pidgin
-        'ha-NG', // Hausa
-        'ig-NG', // Igbo
-        'yo-NG', // Yoruba
-        'sw-TZ', // Swahili (Tanzania)
-        'sw-KE', // Swahili (Kenya)
-        'am-ET', // Amharic (Ethiopia)
-        'so-SO', // Somali
-        'sn-ZW', // Shona (Zimbabwe)
-        'xh-ZA', // Xhosa (South Africa)
-        'zu-ZA', // Zulu (South Africa)
-        'rw-RW', // Kinyarwanda (Rwanda)
-        'lg-UG', // Luganda (Uganda)
-        'st-LS', // Sesotho (Lesotho)
-        'tn-ZA', // Setswana (South Africa)
-        'ss-ZA', // SiSwati (South Africa)
-        'ks-KE', // Gikuyu (Kenya)
-        'nso-ZA', // Sesotho sa Leboa (South Africa)
-        'dje-NE', // Zarma (Niger)
-        // Add more African languages here as needed
-    ];
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.continuous = false;
+        recognition.interimResults = false;
 
-    recognition.lang = 'en-US'; // default language
-    
-    // Function to detect language using LangDetect library
-    function detectLanguage(text) {
-        const detector = new LangDetect();
-        const detectedLang = detector.detect(text);
-        return detectedLang;
-    }
+        const supportedLanguages = [
+            'en-US', 'es-ES', 'fr-FR', 'de-DE', 'it-IT', 
+            'pt-PT', 'nl-NL', 'sv-SE', 'da-DK', 'fi-FI', 
+            'nb-NO', 'tr-TR', 'ru-RU', 'pl-PL', 'cs-CZ', 
+            'hu-HU', 'ro-RO', 'el-GR', 'ja-JP', 'ko-KR', 
+            'zh-CN', 'zh-TW', 'th-TH', 'id-ID', 'ms-MY', 
+            'vi-VN', 'hi-IN', 'bn-IN', 'ta-IN', 'te-IN',
+            'pcm', 'ha-NG', 'ig-NG', 'yo-NG', 'sw-TZ', 
+            'sw-KE', 'am-ET', 'so-SO', 'sn-ZW', 'xh-ZA', 
+            'zu-ZA', 'rw-RW', 'lg-UG', 'st-LS', 'tn-ZA', 
+            'ss-ZA', 'ks-KE', 'nso-ZA', 'dje-NE'
+        ];
 
-    recognition.onresult = function(event) {
-        const transcript = event.results[0][0].transcript;
-        document.getElementById('output').innerText = 'You said: ' + transcript;
-        const detectedLanguage = detectLanguage(transcript);
-        if (supportedLanguages.includes(detectedLanguage)) {
-            recognition.lang = detectedLanguage;
-        } else {
-            console.warn('Detected language not supported:', detectedLanguage);
+        recognition.lang = 'en-US'; // default language
+
+        function detectLanguage(text) {
+            const detector = new LangDetect();
+            return detector.detect(text);
         }
-        handleUserInput(transcript);
-    };
 
-    recognition.onerror = function(event) {
-        console.error('Speech recognition error:', event.error);
-    };
+        startButton.addEventListener('click', () => {
+            recognition.start();
+            output.textContent = 'Listening...';
+            startButton.classList.add('animate-pulse');
+        });
 
-    function startListening() {
-        recognition.start();
-        document.getElementById('output').innerText = 'Listening...';
-    }
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            output.textContent = transcript;
+            startButton.classList.remove('animate-pulse');
+            
+            const detectedLanguage = detectLanguage(transcript);
+            if (supportedLanguages.includes(detectedLanguage)) {
+                recognition.lang = detectedLanguage;
+            }
+            
+            handleUserInput(transcript);
+        };
 
-    function speakResponse(response) {
-        const synthesis = window.speechSynthesis;
-        const utterance = new SpeechSynthesisUtterance(response);
-        synthesis.speak(utterance);
-    }
+        recognition.onerror = (event) => {
+            console.error('Speech recognition error:', event.error);
+            output.textContent = 'Error occurred. Please try again.';
+            startButton.classList.remove('animate-pulse');
+        };
 
-    function handleUserInput(input) {
-        if (input.toLowerCase().includes('help')) {
-            const response = "Sure, I'm here to assist you. What do you need help with?";
+        function handleUserInput(input) {
+            // Simple response logic (expand this for more functionality)
+            let response = "I heard you say: " + input;
+            
+            if (input.toLowerCase().includes('weather')) {
+                response = "I'm sorry, I can't provide real-time weather information. You can check a weather app or website for accurate forecasts.";
+            } else if (input.toLowerCase().includes('joke')) {
+                response = "Here's a joke: Why don't scientists trust atoms? Because they make up everything!";
+            } else if (input.toLowerCase().includes('learn to read')) {
+                response = "Learning to read is a gradual process. Start with alphabet recognition, then move to simple words and sentences. Regular practice and patience are key!";
+                showLearningTip("Try associating letters with familiar objects. For example, 'A' for Apple, 'B' for Ball.");
+            }
+            
             speakResponse(response);
-        } else {
-            // Example: Call APIs to solve world problems based on user input
-            speakResponse("You said: " + input);
         }
-    }
+
+        function speakResponse(response) {
+            const synthesis = window.speechSynthesis;
+            const utterance = new SpeechSynthesisUtterance(response);
+            utterance.lang = recognition.lang;
+            synthesis.speak(utterance);
+        }
+
+        function showLearningTip(tip) {
+            tipContent.textContent = tip;
+            learningTip.classList.remove('hidden');
+        }
+
+        copyButton.addEventListener('click', () => {
+            navigator.clipboard.writeText(output.textContent)
+                .then(() => alert('Text copied to clipboard!'))
+                .catch(err => console.error('Error copying text: ', err));
+        });
+
+        shareButton.addEventListener('click', () => {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'ReasonAI Transcription',
+                    text: output.textContent
+                }).then(() => console.log('Shared successfully'))
+                  .catch((error) => console.log('Error sharing:', error));
+            } else {
+                alert('Web Share API not supported in your browser');
+            }
+        });
     </script>
 </body>
-</html>
+    </html>
